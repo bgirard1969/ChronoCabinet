@@ -1,0 +1,108 @@
+{
+  "summary": "Completed frontend testing of URL renaming (/admin/ → /management/, /light/ → /production/) and time-to-Salle field changes. Fixed one bug in Picking.js edit form that was still using datetime-local instead of date + Salle fields.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Login page (/) shows 'Gestion' label",
+    "Login page shows 'Accéder à Production' link pointing to /production/login",
+    "Admin login redirects to /management/interventions",
+    "Admin sidebar shows 'Gestion' label",
+    "Production login page (/production/login) shows 'Production' label",
+    "Production login page shows 'Gestion' back link pointing to /",
+    "Production login with PIN 1234 redirects to /production/interventions",
+    "All admin sidebar nav links point to /management/* URLs",
+    "All /management/* routes work (interventions, cabinets, products, orders, consumption, employees, movements)",
+    "All /production/* routes work (interventions, picking-libre, restock)",
+    "Admin Interventions table has columns: Date, Salle, MRN, Date naissance, Produits, Statut",
+    "Admin create intervention form has 4 fields in one row: Date (date-only), Salle (2 digits max), MRN, Date naissance",
+    "Salle field only accepts digits (letters are filtered out)",
+    "Salle field max 2 characters enforced",
+    "Creating intervention with date + salle works (API call succeeds)",
+    "Created intervention shows Salle badge (violet) in table",
+    "Production interventions list shows SALLE box (violet) instead of time",
+    "Production create modal has Date + Salle + MRN + Date naissance fields",
+    "Production edit modal has Date + Salle + MRN + Date naissance fields",
+    "Picking page edit form has Date + Salle + MRN + Date naissance fields (after fix)",
+    "Navigation from production pages (restock, picking-libre) uses /production/ URLs"
+  ],
+
+  "test_report_links": [
+    "/app/frontend/src/App.js",
+    "/app/frontend/src/pages/Login.js",
+    "/app/frontend/src/pages/admin/AdminLayout.js",
+    "/app/frontend/src/pages/light/Login.js",
+    "/app/frontend/src/pages/admin/Interventions.js",
+    "/app/frontend/src/pages/light/Interventions.js",
+    "/app/frontend/src/pages/light/Picking.js",
+    "/app/frontend/src/components/interventions/InterventionFormFields.jsx"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/frontend/src/pages/light/Picking.js"
+  ],
+
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100% (21 tests passed)"
+  },
+
+  "test_credentials": {
+    "admin": "benoit.girard@atmshealth.com / Salut123",
+    "production_pin": "1234"
+  },
+
+  "seed_data_creation": "Created test intervention with MRN: TEST-MRN-123, Salle: 07, Date: 2026-04-15",
+
+  "retest_needed": false,
+
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "URL renaming complete: /admin/ → /management/, /light/ → /production/. Labels changed: 'Client Lourd' → 'Gestion', 'Client Léger' → 'Production'. Intervention forms now use date-only (not datetime-local) + Salle field (operating_room, 2-digit numeric). Tables show Salle column instead of time. Light client intervention list shows SALLE badge (violet) instead of clock/time. Fixed Picking.js edit form to use InterventionFormFields component.",
+
+  "features_verified": {
+    "url_renaming": {
+      "/admin/*": "→ /management/*",
+      "/light/*": "→ /production/*",
+      "status": "Working"
+    },
+    "label_changes": {
+      "Client Lourd": "→ Gestion",
+      "Client Léger": "→ Production",
+      "status": "Working"
+    },
+    "salle_field": {
+      "replaces": "time in datetime-local",
+      "type": "2-digit numeric input",
+      "validation": "Only digits, max 2 characters",
+      "display": "Violet badge in tables/lists",
+      "status": "Working"
+    },
+    "intervention_form_fields": {
+      "fields": ["Date (date-only)", "Salle (2 digits)", "MRN", "Date naissance"],
+      "layout": "4 fields in one row",
+      "used_in": ["Admin create/edit", "Production create/edit", "Picking edit"],
+      "status": "Working"
+    }
+  },
+
+  "bug_fixed": {
+    "file": "/app/frontend/src/pages/light/Picking.js",
+    "issue": "Edit form was still using datetime-local input instead of date + Salle fields",
+    "fix": "Replaced inline form with InterventionFormFields component",
+    "status": "Fixed and verified"
+  }
+}

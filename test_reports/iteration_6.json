@@ -1,0 +1,97 @@
+{
+  "summary": "Completed comprehensive testing of GRM Export feature. Backend: 13/14 tests passed (1 skipped - GRM format already validated). Frontend: All UI elements verified working correctly. The Export GRM feature is fully functional.",
+  
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  
+  "passed_tests": [
+    "POST /api/instances/export-grm - returns grm_content, grm_lines_count, invoiced_count, orders_created",
+    "GRM text format validation - pipe-delimited with correct fixed fields (1|1.0|T008|RC|YYYYMMDD|...)",
+    "CONSUMED(5) to INVOICED(6) status transition after export",
+    "Replacement orders creation per supplier with status='sent'",
+    "ProductInstance ORDERED items created for each replacement order",
+    "Movement records created with type='facturation'",
+    "GET /api/instances/consumption returns PICKED and CONSUMED instances only",
+    "PUT /api/instances/{id}/consume marks PICKED instance as CONSUMED",
+    "PUT /api/instances/{id}/consume returns 400 for non-PICKED instances",
+    "PUT /api/instances/{id}/consume returns 404 for non-existent instances",
+    "POST /api/instances/export-grm returns 400 when no CONSUMED instances",
+    "Frontend Consumption page loads correctly with Exporter GRM button",
+    "Exporter GRM button is disabled when 0 consumed products",
+    "Orders page shows replacement orders in 'En attente de réception' section"
+  ],
+  
+  "test_report_links": [
+    "/app/backend/tests/test_grm_export.py",
+    "/app/test_reports/pytest/grm_export_results.xml"
+  ],
+  
+  "action_items": [],
+  
+  "critical_code_review_comments": [],
+  
+  "updated_files": [
+    "/app/backend/tests/test_grm_export.py"
+  ],
+  
+  "success_rate": {
+    "backend": "100% (13/13 tests passed, 1 skipped)",
+    "frontend": "100% (all UI elements verified)"
+  },
+  
+  "test_credentials": {
+    "admin": "benoit.girard@atmshealth.com / Salut123 (PIN: 1234)"
+  },
+  
+  "seed_data_creation": "Created test data with TEST_GRM_ prefix: supplier, product (with grm_number), order, instances. Full workflow tested: order → send → receive → place → pick → consume → export GRM.",
+  
+  "retest_needed": false,
+  
+  "should_main_agent_self_test": false,
+  
+  "context_for_next_testing_agent": "GRM Export feature is fully functional. The workflow is: 1) PICKED instances are marked as CONSUMED via PUT /api/instances/{id}/consume, 2) Export GRM via POST /api/instances/export-grm generates pipe-delimited text file, creates replacement orders per supplier (status='sent'), and transitions instances from CONSUMED(5) to INVOICED(6). Movement records with type='facturation' are created. Frontend Consumption page shows picked/consumed instances with 'Consommer' button for PICKED items and 'Exporter GRM' button (disabled when 0 consumed). Orders page shows replacement orders in 'En attente de réception' section.",
+  
+  "features_verified": {
+    "grm_export_endpoint": {
+      "endpoint": "POST /api/instances/export-grm",
+      "response_fields": ["grm_content", "grm_lines_count", "invoiced_count", "orders_created"],
+      "grm_format": "1|1.0|T008|RC|YYYYMMDD|100171|675102||||DMI01K2153|MMDDYYHHMM|0|grm_number|1|||serial_or_lot||",
+      "status": "Working"
+    },
+    "consume_endpoint": {
+      "endpoint": "PUT /api/instances/{id}/consume",
+      "transitions": "PICKED(4) → CONSUMED(5)",
+      "movement_type": "consommation",
+      "status": "Working"
+    },
+    "consumption_list_endpoint": {
+      "endpoint": "GET /api/instances/consumption",
+      "returns": "PICKED(4) and CONSUMED(5) instances only",
+      "status": "Working"
+    },
+    "replacement_orders": {
+      "creation": "One order per supplier with status='sent'",
+      "instances": "ORDERED instances created for each product",
+      "status": "Working"
+    },
+    "frontend_consumption_page": {
+      "export_button": "data-testid='export-grm-btn' - disabled when 0 consumed",
+      "search_input": "data-testid='consumption-search'",
+      "status_counters": "Shows picked and consumed counts",
+      "status": "Working"
+    },
+    "frontend_orders_page": {
+      "pending_section": "'En attente de réception' shows sent/partially_received orders",
+      "receive_button": "data-testid='receive-btn-{id}'",
+      "status": "Working"
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "summary": "Completed comprehensive testing of specification -> variant rename feature. All 15 backend tests passed. Frontend verified: Variantes tab, cascading filters, intervention detail with variant relation, picking-libre with 3-level cascade. Auto-refresh fix verified (dialog remained open 75+ seconds).",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend: GET /api/product-variants returns variants list",
+    "Backend: GET /api/product-specifications returns 404 (old endpoint removed)",
+    "Backend: GET /api/products returns products with variant_id and variant relation",
+    "Backend: GET /api/products/filter-options returns filter_options.variants (not specifications)",
+    "Backend: GET /api/products/filter-options?variant_id=... works correctly",
+    "Backend: GET /api/instances/fifo-suggestion?variant_id=... works correctly",
+    "Backend: GET /api/instances/available-stock?variant_id=... works correctly",
+    "Backend: GET /api/interventions/:id returns products with variant relation and resolution='variant'",
+    "Backend: GET /api/interventions/:id/fifo-suggestions returns items with variant field",
+    "Backend: POST /api/interventions/:id/products accepts variant_id payload",
+    "Backend: Variant CRUD (create, update, delete) works correctly",
+    "Frontend: Auto-refresh fix verified - dialog remained open 75+ seconds without forced reload",
+    "Frontend: Products page shows 'Variantes' tab with list from /api/product-variants",
+    "Frontend: Products page shows 'VARIANTE' column and 'Toutes variantes' filter",
+    "Frontend: Product instances dialog shows 6 instances for 'Astra XT DR MRI SureScan' (matching stock=6)",
+    "Frontend: Intervention detail shows stock browser with CATÉGORIE/MODÈLE/VARIANTE columns",
+    "Frontend: Intervention detail shows products with 'Variante' tag and variant info",
+    "Frontend: Picking-libre page shows 3-level cascade (Catégorie > Modèle > Variante)",
+    "Frontend: Picking-libre uses variant_id in /api/instances/fifo-suggestion API call"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_variant_rename.py",
+    "/app/test_reports/pytest/variant_rename_results.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [
+    "All backend endpoints correctly renamed from specification to variant",
+    "Frontend components correctly use variant_id in API calls",
+    "Auto-refresh fix applied via --live-reload=false --hmr=false in ng serve script",
+    "Database schema migrated: table product_specifications -> product_variants, column specification_id -> variant_id"
+  ],
+
+  "updated_files": [
+    "/app/backend/tests/test_variant_rename.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% (all features working correctly)"
+  },
+
+  "test_credentials": {
+    "admin": "benoit.girard@atmshealth.com / Salut123",
+    "production_pin": "1234"
+  },
+
+  "seed_data_creation": "Created and cleaned up test interventions and variants during testing",
+
+  "retest_needed": false,
+
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Specification -> Variant rename is complete. All backend endpoints use variant_id instead of specification_id. Frontend uses /api/product-variants endpoint and variant_id in all API calls. Auto-refresh fix is applied via Angular CLI flags. The instances dialog correctly shows RECEIVED and PLACED instances matching the stock count.",
+
+  "mocked_apis": {
+    "note": "Hardware cabinet endpoints are mocked (/api/hardware/*)",
+    "endpoints": ["/api/hardware/cabinets/:id/unlock", "/api/hardware/cabinets/:id/lock", "/api/hardware/locations/:id/led"]
+  },
+
+  "features_tested": {
+    "auto_refresh_fix": {
+      "description": "Disabled Angular dev server live-reload/HMR to prevent 30-second auto-refresh",
+      "fix_location": "/app/frontend/package.json line 6: ng serve --live-reload=false --hmr=false",
+      "verification": "Dialog remained open for 75+ seconds without forced reload"
+    },
+    "variant_rename": {
+      "backend_changes": [
+        "Table: product_specifications -> product_variants",
+        "Column: specification_id -> variant_id (on products and intervention_products)",
+        "Endpoint: /api/product-specifications -> /api/product-variants",
+        "Query params: specification_id -> variant_id",
+        "Relations: specification -> variant"
+      ],
+      "frontend_changes": [
+        "Tab: 'Variantes' instead of 'Spécifications'",
+        "Filter: 'Toutes variantes' dropdown",
+        "Column: 'VARIANTE' in products table",
+        "API calls use variant_id parameter"
+      ]
+    }
+  }
+}
